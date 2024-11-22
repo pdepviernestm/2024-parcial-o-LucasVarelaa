@@ -1,9 +1,73 @@
-import example.pepita
+import intensamente.*
+describe "Testeos Intensos " {
+  const persona1 = new Persona(edad = 14, eventosVividos = 3)
+  const persona2 = new Persona(edad = 24, eventosVividos = 10)
+  const persona3 = new Persona(edad = 89, eventosVividos = 50)
 
-describe "group of tests for pepita" {
+  const furia = new Furia() 
+  const alegria = new Alegria(intensidad = 20)
+  const tristeza = new Tristeza(intensidad = 70) 
+  const desagrado = new DesagradoTemor(intensidad = 2)
+  const temor = new DesagradoTemor(intensidad = 99)
+  const ansiedad = new Ansiedad(intensidad = 20, pensamientosRepetitivos = 10)
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  const mirarTele = new Evento(impacto=5, descripcion="Mirar la tele")
+  const estudiar = new Evento(impacto=100, descripcion="parcial de programacion")
+
+  test "Persona 2 NO !!! es adolescente" {
+    assert.notThat(persona2.esAdolescente())
   }
 
+  test "Persona 1 tiene 6 emociones nuevas"{
+    persona1.tenerUnaEmocion(furia)
+    persona1.tenerUnaEmocion(alegria)
+    persona1.tenerUnaEmocion(tristeza)
+    persona1.tenerUnaEmocion(desagrado)
+    persona1.tenerUnaEmocion(temor)
+    persona1.tenerUnaEmocion(ansiedad)
+    assert.equals(6, persona1.cantEmociones())
+  }
+
+  test "Una persona tiene ansiedad y esta por explotar debido a la misma" {
+    persona1.tenerUnaEmocion(ansiedad)
+    assert.that(persona1.estaPorExplotar())
+  }
+
+  test "Persona vive un Evento nuevo y se le suma un eventoVivido" {
+    persona1.vivir(mirarTele)
+    persona1.tenerUnaEmocion(tristeza)
+    assert.equals(4, persona1.eventosVividos())
+  }
+
+  test "Modificar valor de Intensidad Limite"{
+    global.intensidadLimite(50)
+    assert.equals(50, global.intensidadLimite())
+  }
+
+  test "todos los integrantes de un grupo de personas viven un mismo evento"{
+  
+    global.agregarPersona(persona1)
+    persona1.tenerUnaEmocion(alegria)
+    persona1.tenerUnaEmocion(tristeza)
+    tristeza.causa("facultad")
+
+    global.agregarPersona(persona2)
+    persona2.tenerUnaEmocion(furia)
+    furia.aprenderPalabrota("fuck")
+
+    global.agregarPersona(persona3)
+
+    var cant = global.cantPersonasPorExplotar()
+
+    global.todosViven(estudiar)
+
+    assert.equals(4, persona1.eventosVividos())
+    assert.equals(11, persona2.eventosVividos())
+    assert.equals(51, persona3.eventosVividos())
+    assert.notEquals(cant, global.cantPersonasPorExplotar())
+    assert.equals(1, alegria.cantEventos()) // se libera
+    assert.equals(1, tristeza.cantEventos()) // se libera
+    assert.equals(0, furia.cantEventos()) // no se libera
+
+  }
 }
